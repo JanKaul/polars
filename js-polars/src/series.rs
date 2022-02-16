@@ -1,12 +1,9 @@
+use crate::{console_log, log};
 use polars_core::prelude::{
     Float64Chunked, IntoSeries, NewChunkedArray, Series as PSeries, Utf8Chunked,
 };
 use std::ops::{BitAnd, BitOr};
 use wasm_bindgen::prelude::*;
-use crate::{
-    console_log,
-    log,
-};
 
 #[wasm_bindgen]
 #[repr(transparent)]
@@ -26,11 +23,11 @@ impl Series {
     pub fn new(name: &str, values: Box<[JsValue]>) -> Series {
         let first = &values[0];
         if first.as_f64().is_some() {
-            let series = Float64Chunked::new_from_opt_iter(name, values.iter().map(|v| v.as_f64()))
+            let series = Float64Chunked::from_iter_options(name, values.iter().map(|v| v.as_f64()))
                 .into_series();
             Series { series }
         } else if first.as_string().is_some() {
-            let series = Utf8Chunked::new_from_opt_iter(name, values.iter().map(|v| v.as_string()))
+            let series = Utf8Chunked::from_iter_options(name, values.iter().map(|v| v.as_string()))
                 .into_series();
             Series { series }
         } else {
@@ -48,13 +45,13 @@ impl Series {
     }
 
     #[wasm_bindgen(js_name = toJSON)]
-    pub fn to_json(&self) ->  String {
+    pub fn to_json(&self) -> String {
         let mut series_fmt = String::with_capacity(10);
         series_fmt.push('[');
-        let n  = std::cmp::min(self.series.len(), 5);
+        let n = std::cmp::min(self.series.len(), 5);
         for i in 0..n {
             let val = self.series.get(i);
-            if i < n -1 {
+            if i < n - 1 {
                 series_fmt.push_str(&format!("{}, ", val))
             } else {
                 series_fmt.push_str(&format!("{}", val))
@@ -112,7 +109,7 @@ impl Series {
 
     #[wasm_bindgen(js_name = chunkLengths)]
     pub fn chunk_lengths(&self) -> Vec<usize> {
-        self.series.chunk_lengths().clone()
+        self.series.chunk_lengths().collect::<Vec<usize>>().clone()
     }
 
     pub fn name(&self) -> String {

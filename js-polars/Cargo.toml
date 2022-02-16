@@ -20,11 +20,7 @@ wee_alloc = { version = "0.4.5" }
 [dependencies.polars-core]
 path = "../polars/polars-core"
 default-features = false
-features = [
-  "strings",
-  "temporal",
-  "performant",
-]
+features = ["strings", "temporal", "performant", "private"]
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
