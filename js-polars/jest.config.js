@@ -4,7 +4,12 @@ export default {
   globals: {
     'ts-jest': {
       useESM: true,
+      tsconfig: "tsconfig.json",
     },
   },
-  testEnvironment: "",
+  testEnvironment: "jsdom",
+  moduleNameMapper: {
+    '@polars/index': '<rootDir>/pkg/polars',
+    '@polars': '<rootDir>/pkg/polars',
+  },
 };

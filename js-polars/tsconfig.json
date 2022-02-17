@@ -1,6 +1,16 @@
 {
     "compilerOptions": {
-        "module": "es2020",
-        "esModuleInterop": true
+        "module": "es2015",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "baseUrl": ".",
+        "paths": {
+            "@polars/index": [
+                "./pkg/polars"
+            ],
+            "@polars": [
+                "./pkg/polars"
+            ],
+        }
     },
 }
