@@ -11,6 +11,9 @@
             "@polars": [
                 "./pkg/polars"
             ],
+            "*": [
+                "./node_modules/*"
+            ],
         }
     },
 }

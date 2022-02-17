@@ -1,6 +1,6 @@
 /* eslint-disable newline-per-chained-call */
 import pl from "@polars";
-import {InvalidOperationError} from "../polars/error";
+import { InvalidOperationError } from "../polars/error";
 import Chance from "chance";
 
 
@@ -190,7 +190,7 @@ describe("typedArrays", () => {
       new Float64Array([33, 44, 55]),
       new BigUint64Array([1n, 2n, 3n]),
     ];
-    const fn = () =>  pl.Series(float64Arrays).toArray();
+    const fn = () => pl.Series(float64Arrays).toArray();
     expect(fn).toThrow();
   });
 });
@@ -219,7 +219,7 @@ describe("series", () => {
       ${[true, false]}          | ${"Bool"}     | ${"boolean"}
       ${[]}                     | ${"Float64"}  | ${"empty"}
       ${[new Date(Date.now())]} | ${"Datetime"} | ${"Date"}
-    `("defaults to $dtype for \"$type\"", ({ values, dtype}) => {
+    `("defaults to $dtype for \"$type\"", ({ values, dtype }) => {
       const name = chance.string();
       const s = pl.Series(name, values);
       expect(s.name).toStrictEqual(name);
@@ -257,7 +257,7 @@ describe("series", () => {
     ${new Uint32Array([1123, 2, 3000, 12801, 99, 43242])} | ${"Uint32Array"}
     ${new BigInt64Array([1123n, 2n, 3000n, 12801n, 99n, 43242n])} | ${"BigInt64Array"}
     ${new BigUint64Array([1123n, 2n, 3000n, 12801n, 99n, 43242n])} | ${"BigUint64Array"}
-    `("can be created from $type", ({values}) => {
+    `("can be created from $type", ({ values }) => {
       const name = chance.string();
       const s = pl.Series(name, values);
       expect([...s]).toEqual([...values]);
@@ -267,16 +267,16 @@ describe("series", () => {
   describe("math", () => {
 
     it("can add", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
       let s = pl.Series("", [item]);
       s = s.add(other);
       expect(s[0]).toStrictEqual(item + other);
     });
 
     it("can subtract", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
 
       let s = pl.Series("", [item]);
       s = s.sub(other);
@@ -284,8 +284,8 @@ describe("series", () => {
     });
 
     it("can multiply", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
 
       let s = pl.Series("", [item]);
       s = s.mul(other);
@@ -293,8 +293,8 @@ describe("series", () => {
     });
 
     it("can divide", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
 
       let s = pl.Series("", [item]);
       s = s.div(other);
@@ -302,16 +302,16 @@ describe("series", () => {
     });
 
     it("can add two series", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
       let s = pl.Series("", [item]);
       s = s.add(pl.Series("", [other]));
       expect(s[0]).toStrictEqual(item + other);
     });
 
     it("can subtract two series", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
 
       let s = pl.Series("", [item]);
       s = s.sub(pl.Series("", [other]));
@@ -319,8 +319,8 @@ describe("series", () => {
     });
 
     it("can multiply two series", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
 
       let s = pl.Series("", [item]);
       s = s.mul(pl.Series("", [other]));
@@ -328,8 +328,8 @@ describe("series", () => {
     });
 
     it("can divide two series", () => {
-      const item = chance.natural({max: 100});
-      const other = chance.natural({max: 100});
+      const item = chance.natural({ max: 100 });
+      const other = chance.natural({ max: 100 });
 
       let s = pl.Series("", [item]);
       s = s.div(pl.Series("", [other]));
@@ -339,7 +339,7 @@ describe("series", () => {
 
   describe("comparator", () => {
     it("can perform 'eq", () => {
-      const s =  pl.Series("", [1, 2, 3]).eq(1);
+      const s = pl.Series("", [1, 2, 3]).eq(1);
       expect([...s]).toEqual([true, false, false]);
     });
   });
@@ -347,7 +347,7 @@ describe("series", () => {
 describe("series", () => {
   const numSeries = () => pl.Series("foo", [1, 2, 3], pl.Int32);
   const fltSeries = () => pl.Series("float", [1, 2, 3], pl.Float64);
-  const boolSeries = () =>  pl.Series("bool", [true, false, false]);
+  const boolSeries = () => pl.Series("bool", [true, false, false]);
   const other = () => pl.Series("bar", [3, 4, 5], pl.Int32);
 
   const chance = new Chance();
@@ -357,7 +357,7 @@ describe("series", () => {
   ${numSeries()}  | ${"dtype"}
   ${numSeries()}  | ${"name"}
   ${numSeries()}  | ${"length"}
-  `("$# $getter does not error", ({series, getter}) => {
+  `("$# $getter does not error", ({ series, getter }) => {
     try {
       series[getter];
     } catch (err) {
@@ -384,21 +384,21 @@ describe("series", () => {
   ${numSeries()}  | ${"cumSum"}       | ${[]}
   ${numSeries()}  | ${"describe"}     | ${[]}
   ${numSeries()}  | ${"diff"}         | ${[]}
-  ${numSeries()}  | ${"diff"}         | ${[{n: 1, nullBehavior: "drop"}]}
-  ${numSeries()}  | ${"diff"}         | ${[{nullBehavior: "drop"}]}
+  ${numSeries()}  | ${"diff"}         | ${[{ n: 1, nullBehavior: "drop" }]}
+  ${numSeries()}  | ${"diff"}         | ${[{ nullBehavior: "drop" }]}
   ${numSeries()}  | ${"diff"}         | ${[1, "drop"]}
   ${numSeries()}  | ${"dot"}          | ${[other()]}
   ${numSeries()}  | ${"dropNulls"}    | ${[]}
   ${numSeries()}  | ${"fillNull"}     | ${["zero"]}
-  ${numSeries()}  | ${"fillNull"}     | ${[{strategy: "zero"}]}
+  ${numSeries()}  | ${"fillNull"}     | ${[{ strategy: "zero" }]}
   ${numSeries()}  | ${"filter"}       | ${[boolSeries()]}
   ${fltSeries()}  | ${"floor"}        | ${[]}
   ${numSeries()}  | ${"hasValidity"}  | ${[]}
   ${numSeries()}  | ${"hash"}         | ${[]}
-  ${numSeries()}  | ${"hash"}         | ${[{k0: 10}]}
-  ${numSeries()}  | ${"hash"}         | ${[{k0: 10, k1: 29}]}
-  ${numSeries()}  | ${"hash"}         | ${[{k0: 10, k1: 29, k2: 3}]}
-  ${numSeries()}  | ${"hash"}         | ${[{k0: 10, k1: 29, k3: 1, k2: 3}]}
+  ${numSeries()}  | ${"hash"}         | ${[{ k0: 10 }]}
+  ${numSeries()}  | ${"hash"}         | ${[{ k0: 10, k1: 29 }]}
+  ${numSeries()}  | ${"hash"}         | ${[{ k0: 10, k1: 29, k2: 3 }]}
+  ${numSeries()}  | ${"hash"}         | ${[{ k0: 10, k1: 29, k3: 1, k2: 3 }]}
   ${numSeries()}  | ${"hash"}         | ${[1]}
   ${numSeries()}  | ${"hash"}         | ${[1, 2]}
   ${numSeries()}  | ${"hash"}         | ${[1, 2, 3]}
@@ -422,9 +422,9 @@ describe("series", () => {
   ${numSeries()}  | ${"isUnique"}     | ${[]}
   ${numSeries()}  | ${"isUtf8"}       | ${[]}
   ${numSeries()}  | ${"kurtosis"}     | ${[]}
-  ${numSeries()}  | ${"kurtosis"}     | ${[{fisher: true, bias: true}]}
-  ${numSeries()}  | ${"kurtosis"}     | ${[{bias: false}]}
-  ${numSeries()}  | ${"kurtosis"}     | ${[{fisher: false}]}
+  ${numSeries()}  | ${"kurtosis"}     | ${[{ fisher: true, bias: true }]}
+  ${numSeries()}  | ${"kurtosis"}     | ${[{ bias: false }]}
+  ${numSeries()}  | ${"kurtosis"}     | ${[{ fisher: false }]}
   ${numSeries()}  | ${"kurtosis"}     | ${[false, false]}
   ${numSeries()}  | ${"kurtosis"}     | ${[false]}
   ${numSeries()}  | ${"len"}          | ${[]}
@@ -445,48 +445,48 @@ describe("series", () => {
   ${numSeries()}  | ${"rank"}         | ${["average"]}
   ${numSeries()}  | ${"rechunk"}      | ${[]}
   ${numSeries()}  | ${"rechunk"}      | ${[true]}
-  ${numSeries()}  | ${"rechunk"}      | ${[{inPlace: true}]}
+  ${numSeries()}  | ${"rechunk"}      | ${[{ inPlace: true }]}
   ${numSeries()}  | ${"rename"}       | ${["new name"]}
   ${numSeries()}  | ${"rename"}       | ${["new name", true]}
-  ${numSeries()}  | ${"rename"}       | ${[{name: "new name"}]}
-  ${numSeries()}  | ${"rename"}       | ${[{name: "new name", inPlace: true}]}
-  ${numSeries()}  | ${"rename"}       | ${[{name: "new name"}]}
-  ${numSeries()}  | ${"rollingMax"}   | ${[{windowSize: 1}]}
-  ${numSeries()}  | ${"rollingMax"}   | ${[{windowSize: 1, weights: [.33]}]}
-  ${numSeries()}  | ${"rollingMax"}   | ${[{windowSize: 1, weights: [.11], minPeriods: 1}]}
-  ${numSeries()}  | ${"rollingMax"}   | ${[{windowSize: 1, weights: [.44], minPeriods: 1, center: false}]}
+  ${numSeries()}  | ${"rename"}       | ${[{ name: "new name" }]}
+  ${numSeries()}  | ${"rename"}       | ${[{ name: "new name", inPlace: true }]}
+  ${numSeries()}  | ${"rename"}       | ${[{ name: "new name" }]}
+  ${numSeries()}  | ${"rollingMax"}   | ${[{ windowSize: 1 }]}
+  ${numSeries()}  | ${"rollingMax"}   | ${[{ windowSize: 1, weights: [.33] }]}
+  ${numSeries()}  | ${"rollingMax"}   | ${[{ windowSize: 1, weights: [.11], minPeriods: 1 }]}
+  ${numSeries()}  | ${"rollingMax"}   | ${[{ windowSize: 1, weights: [.44], minPeriods: 1, center: false }]}
   ${numSeries()}  | ${"rollingMax"}   | ${[1]}
   ${numSeries()}  | ${"rollingMax"}   | ${[1, [.11]]}
   ${numSeries()}  | ${"rollingMax"}   | ${[1, [.11], 1]}
   ${numSeries()}  | ${"rollingMax"}   | ${[1, [.23], 1, true]}
-  ${numSeries()}  | ${"rollingMean"}  | ${[{windowSize: 1}]}
-  ${numSeries()}  | ${"rollingMean"}  | ${[{windowSize: 1, weights: [.33]}]}
-  ${numSeries()}  | ${"rollingMean"}  | ${[{windowSize: 1, weights: [.11], minPeriods: 1}]}
-  ${numSeries()}  | ${"rollingMean"}  | ${[{windowSize: 1, weights: [.44], minPeriods: 1, center: false}]}
+  ${numSeries()}  | ${"rollingMean"}  | ${[{ windowSize: 1 }]}
+  ${numSeries()}  | ${"rollingMean"}  | ${[{ windowSize: 1, weights: [.33] }]}
+  ${numSeries()}  | ${"rollingMean"}  | ${[{ windowSize: 1, weights: [.11], minPeriods: 1 }]}
+  ${numSeries()}  | ${"rollingMean"}  | ${[{ windowSize: 1, weights: [.44], minPeriods: 1, center: false }]}
   ${numSeries()}  | ${"rollingMean"}  | ${[1]}
   ${numSeries()}  | ${"rollingMean"}  | ${[1, [.11]]}
   ${numSeries()}  | ${"rollingMean"}  | ${[1, [.11], 1]}
   ${numSeries()}  | ${"rollingMean"}  | ${[1, [.23], 1, true]}
-  ${numSeries()}  | ${"rollingMin"}   | ${[{windowSize: 1}]}
-  ${numSeries()}  | ${"rollingMin"}   | ${[{windowSize: 1, weights: [.33]}]}
-  ${numSeries()}  | ${"rollingMin"}   | ${[{windowSize: 1, weights: [.11], minPeriods: 1}]}
-  ${numSeries()}  | ${"rollingMin"}   | ${[{windowSize: 1, weights: [.44], minPeriods: 1, center: false}]}
+  ${numSeries()}  | ${"rollingMin"}   | ${[{ windowSize: 1 }]}
+  ${numSeries()}  | ${"rollingMin"}   | ${[{ windowSize: 1, weights: [.33] }]}
+  ${numSeries()}  | ${"rollingMin"}   | ${[{ windowSize: 1, weights: [.11], minPeriods: 1 }]}
+  ${numSeries()}  | ${"rollingMin"}   | ${[{ windowSize: 1, weights: [.44], minPeriods: 1, center: false }]}
   ${numSeries()}  | ${"rollingMin"}   | ${[1]}
   ${numSeries()}  | ${"rollingMin"}   | ${[1, [.11]]}
   ${numSeries()}  | ${"rollingMin"}   | ${[1, [.11], 1]}
   ${numSeries()}  | ${"rollingMin"}   | ${[1, [.23], 1, true]}
-  ${numSeries()}  | ${"rollingSum"}   | ${[{windowSize: 1}]}
-  ${numSeries()}  | ${"rollingSum"}   | ${[{windowSize: 1, weights: [.33]}]}
-  ${numSeries()}  | ${"rollingSum"}   | ${[{windowSize: 1, weights: [.11], minPeriods: 1}]}
-  ${numSeries()}  | ${"rollingSum"}   | ${[{windowSize: 1, weights: [.44], minPeriods: 1, center: false}]}
+  ${numSeries()}  | ${"rollingSum"}   | ${[{ windowSize: 1 }]}
+  ${numSeries()}  | ${"rollingSum"}   | ${[{ windowSize: 1, weights: [.33] }]}
+  ${numSeries()}  | ${"rollingSum"}   | ${[{ windowSize: 1, weights: [.11], minPeriods: 1 }]}
+  ${numSeries()}  | ${"rollingSum"}   | ${[{ windowSize: 1, weights: [.44], minPeriods: 1, center: false }]}
   ${numSeries()}  | ${"rollingSum"}   | ${[1]}
   ${numSeries()}  | ${"rollingSum"}   | ${[1, [.11]]}
   ${numSeries()}  | ${"rollingSum"}   | ${[1, [.11], 1]}
   ${numSeries()}  | ${"rollingSum"}   | ${[1, [.23], 1, true]}
-  ${numSeries()}  | ${"rollingVar"}   | ${[{windowSize: 1}]}
-  ${numSeries()}  | ${"rollingVar"}   | ${[{windowSize: 1, weights: [.33]}]}
-  ${numSeries()}  | ${"rollingVar"}   | ${[{windowSize: 1, weights: [.11], minPeriods: 1}]}
-  ${numSeries()}  | ${"rollingVar"}   | ${[{windowSize: 1, weights: [.44], minPeriods: 1, center: false}]}
+  ${numSeries()}  | ${"rollingVar"}   | ${[{ windowSize: 1 }]}
+  ${numSeries()}  | ${"rollingVar"}   | ${[{ windowSize: 1, weights: [.33] }]}
+  ${numSeries()}  | ${"rollingVar"}   | ${[{ windowSize: 1, weights: [.11], minPeriods: 1 }]}
+  ${numSeries()}  | ${"rollingVar"}   | ${[{ windowSize: 1, weights: [.44], minPeriods: 1, center: false }]}
   ${numSeries()}  | ${"rollingVar"}   | ${[1]}
   ${numSeries()}  | ${"rollingVar"}   | ${[1, [.11]]}
   ${numSeries()}  | ${"rollingVar"}   | ${[1, [.11], 1]}
@@ -494,34 +494,34 @@ describe("series", () => {
   ${fltSeries()}  | ${"round"}        | ${[1]}
   ${numSeries()}  | ${"sample"}       | ${[1, null, true]}
   ${numSeries()}  | ${"sample"}       | ${[null, 1]}
-  ${numSeries()}  | ${"sample"}       | ${[{n: 1}]}
-  ${numSeries()}  | ${"sample"}       | ${[{frac: 0.5}]}
-  ${numSeries()}  | ${"sample"}       | ${[{n: 1, withReplacement: true}]}
-  ${numSeries()}  | ${"sample"}       | ${[{frac: 0.1, withReplacement: true}]}
+  ${numSeries()}  | ${"sample"}       | ${[{ n: 1 }]}
+  ${numSeries()}  | ${"sample"}       | ${[{ frac: 0.5 }]}
+  ${numSeries()}  | ${"sample"}       | ${[{ n: 1, withReplacement: true }]}
+  ${numSeries()}  | ${"sample"}       | ${[{ frac: 0.1, withReplacement: true }]}
   ${numSeries()}  | ${"seriesEqual"}  | ${[other()]}
   ${numSeries()}  | ${"seriesEqual"}  | ${[other(), true]}
   ${numSeries()}  | ${"seriesEqual"}  | ${[other(), false]}
-  ${numSeries()}  | ${"seriesEqual"}  | ${[other(), {nullEqual:true}]}
-  ${numSeries()}  | ${"seriesEqual"}  | ${[other(), {nullEqual:false}]}
+  ${numSeries()}  | ${"seriesEqual"}  | ${[other(), { nullEqual: true }]}
+  ${numSeries()}  | ${"seriesEqual"}  | ${[other(), { nullEqual: false }]}
   ${numSeries()}  | ${"set"}          | ${[boolSeries(), 2]}
   ${numSeries()}  | ${"setAtIdx"}     | ${[[0, 1], 1]}
   ${numSeries()}  | ${"shift"}        | ${[]}
   ${numSeries()}  | ${"shift"}        | ${[1]}
-  ${numSeries()}  | ${"shift"}        | ${[{periods: 1}]}
+  ${numSeries()}  | ${"shift"}        | ${[{ periods: 1 }]}
   ${numSeries()}  | ${"shiftAndFill"} | ${[1, 2]}
-  ${numSeries()}  | ${"shiftAndFill"} | ${[{periods: 1, fillValue: 2}]}
+  ${numSeries()}  | ${"shiftAndFill"} | ${[{ periods: 1, fillValue: 2 }]}
   ${numSeries()}  | ${"skew"}         | ${[]}
   ${numSeries()}  | ${"skew"}         | ${[true]}
   ${numSeries()}  | ${"skew"}         | ${[false]}
-  ${numSeries()}  | ${"skew"}         | ${[{bias: true}]}
-  ${numSeries()}  | ${"skew"}         | ${[{bias: false}]}
+  ${numSeries()}  | ${"skew"}         | ${[{ bias: true }]}
+  ${numSeries()}  | ${"skew"}         | ${[{ bias: false }]}
   ${numSeries()}  | ${"slice"}        | ${[1, 2]}
-  ${numSeries()}  | ${"slice"}        | ${[{offset: 1, length: 2}]}
+  ${numSeries()}  | ${"slice"}        | ${[{ offset: 1, length: 2 }]}
   ${numSeries()}  | ${"sort"}         | ${[]}
   ${numSeries()}  | ${"sort"}         | ${[false]}
   ${numSeries()}  | ${"sort"}         | ${[true]}
-  ${numSeries()}  | ${"sort"}         | ${[{reverse: true}]}
-  ${numSeries()}  | ${"sort"}         | ${[{reverse: false}]}
+  ${numSeries()}  | ${"sort"}         | ${[{ reverse: true }]}
+  ${numSeries()}  | ${"sort"}         | ${[{ reverse: false }]}
   ${numSeries()}  | ${"sum"}          | ${[]}
   ${numSeries()}  | ${"tail"}         | ${[]}
   ${numSeries()}  | ${"take"}         | ${[[1, 2]]}
@@ -530,7 +530,7 @@ describe("series", () => {
   ${numSeries()}  | ${"unique"}       | ${[]}
   ${numSeries()}  | ${"valueCounts"}  | ${[]}
   ${numSeries()}  | ${"zipWith"}      | ${[boolSeries(), other()]}
-  `("$# $method is callable", ({series, method, args}) => {
+  `("$# $method is callable", ({ series, method, args }) => {
     try {
       series[method](...args);
     } catch (err) {
@@ -616,22 +616,22 @@ describe("series", () => {
   ${"quantile"}      | ${pl.Series([1, 2, 3]).quantile(0.5)}                | ${2}
   ${"rank"}          | ${pl.Series([1, 2, 3, 2, 2, 3, 0]).rank("dense")}    | ${pl.Series("", [2, 3, 4, 3, 3, 4, 1], pl.UInt32)}
   ${"rename"}        | ${pl.Series([1, 3, 0]).rename("b")}                  | ${pl.Series("b", [1, 3, 0])}
-  ${"rename"}        | ${pl.Series([1, 3, 0]).rename({name: "b"})}          | ${pl.Series("b", [1, 3, 0])}
+  ${"rename"}        | ${pl.Series([1, 3, 0]).rename({ name: "b" })}          | ${pl.Series("b", [1, 3, 0])}
   ${"rollingMax"}    | ${pl.Series([1, 2, 3, 2, 1]).rollingMax(2)}          | ${pl.Series("", [null, 2, 3, 3, 2], pl.Float64)}
   ${"rollingMin"}    | ${pl.Series([1, 2, 3, 2, 1]).rollingMin(2)}          | ${pl.Series("", [null, 1, 2, 2, 1], pl.Float64)}
   ${"rollingSum"}    | ${pl.Series([1, 2, 3, 2, 1]).rollingSum(2)}          | ${pl.Series("", [null, 3, 5, 5, 3], pl.Float64)}
   ${"rollingMean"}   | ${pl.Series([1, 2, 3, 2, 1]).rollingMean(2)}         | ${pl.Series("", [null, 1.5, 2.5, 2.5, 1.5], pl.Float64)}
   ${"rollingVar"}    | ${pl.Series([1, 2, 3, 2, 1]).rollingVar(2)[1]}       | ${0.5}
   ${"sample:n"}      | ${pl.Series([1, 2, 3, 4, 5]).sample(2).len()}        | ${2}
-  ${"sample:frac"}   | ${pl.Series([1, 2, 3, 4, 5]).sample({frac:.4}).len()}| ${2}
+  ${"sample:frac"}   | ${pl.Series([1, 2, 3, 4, 5]).sample({ frac: .4 }).len()}| ${2}
   ${"shift"}         | ${pl.Series([1, 2, 3]).shift(1)}                     | ${pl.Series([null, 1, 2])}
   ${"shift"}         | ${pl.Series([1, 2, 3]).shift(-1)}                    | ${pl.Series([2, 3, null])}
   ${"skew"}          | ${pl.Series([1, 2, 3, 3, 0]).skew()?.toPrecision(6)} | ${"-0.363173"}
   ${"slice"}         | ${pl.Series([1, 2, 3, 3, 0]).slice(-3, 3)}           | ${pl.Series([3, 3, 0])}
   ${"slice"}         | ${pl.Series([1, 2, 3, 3, 0]).slice(1, 3)}            | ${pl.Series([2, 3, 3])}
   ${"sort"}          | ${pl.Series([4, 2, 5, 1, 2, 3, 3, 0]).sort()}        | ${pl.Series([0, 1, 2, 2, 3, 3, 4, 5])}
-  ${"sort"}          | ${pl.Series([4, 2, 5, 0]).sort({reverse:true})}      | ${pl.Series([5, 4, 2, 0])}
-  ${"sort"}          | ${pl.Series([4, 2, 5, 0]).sort({reverse:false})}     | ${pl.Series([0, 2, 4, 5])}
+  ${"sort"}          | ${pl.Series([4, 2, 5, 0]).sort({ reverse: true })}      | ${pl.Series([5, 4, 2, 0])}
+  ${"sort"}          | ${pl.Series([4, 2, 5, 0]).sort({ reverse: false })}     | ${pl.Series([0, 2, 4, 5])}
   ${"sum"}           | ${pl.Series([1, 2, 2, 1]).sum()}                     | ${6}
   ${"tail"}          | ${pl.Series([1, 2, 2, 1]).tail(2)}                   | ${pl.Series([2, 1])}
   ${"takeEvery"}     | ${pl.Series([1, 3, 2, 9, 1]).takeEvery(2)}           | ${pl.Series([1, 2, 1])}
@@ -640,8 +640,8 @@ describe("series", () => {
   ${"unique"}        | ${pl.Series([1, 2, 3, 3]).unique().sort()}           | ${pl.Series([1, 2, 3])}
   ${"toFrame"}       | ${pl.Series("foo", [1, 2, 3]).toFrame().toJSON()}    | ${pl.DataFrame([pl.Series("foo", [1, 2, 3])]).toJSON()}
   ${"shiftAndFill"}  | ${pl.Series("foo", [1, 2, 3]).shiftAndFill(1, 99)}   | ${pl.Series("foo", [99, 1, 2])}
-  `("$# $name: expected matches actual ", ({expected, actual}) => {
-    if(pl.Series.isSeries(expected) && pl.Series.isSeries(actual)) {
+  `("$# $name: expected matches actual ", ({ expected, actual }) => {
+    if (pl.Series.isSeries(expected) && pl.Series.isSeries(actual)) {
       expect(actual).toSeriesEqual(expected);
     } else {
       expect(actual).toEqual(expected);
@@ -679,7 +679,7 @@ describe("series", () => {
   ${"isInfinite"} | ${pl.Series(["foo"]).isInfinite} | ${InvalidOperationError}
   ${"rollingMax"} | ${() => pl.Series(["foo"]).rollingMax(null as any)} | ${Error}
   ${"sample"} | ${() => pl.Series(["foo"]).sample(null as any)} | ${Error}
-  `("$# $name throws an error ", ({fn, errorType}) => {
+  `("$# $name throws an error ", ({ fn, errorType }) => {
     expect(fn).toThrow(errorType);
   });
   test("reinterpret", () => {
@@ -717,7 +717,7 @@ describe("series", () => {
   test("round:named", () => {
     const s = pl.Series([1.1111, 2.2222]);
     const expected = pl.Series([1.11, 2.22]);
-    const actual = s.round({decimals: 2});
+    const actual = s.round({ decimals: 2 });
     expect(actual).toSeriesEqual(expected);
   });
 });
@@ -796,7 +796,7 @@ describe("comparators & math", () => {
   });
 });
 describe("series proxy & metadata", () => {
-  const {Series} = pl;
+  const { Series } = pl;
   test("toString & inspect", () => {
     const s = pl.Series("foo", [1, 2, 3], pl.Int16);
     const sString = s.toString();
@@ -812,7 +812,7 @@ describe("series proxy & metadata", () => {
   });
   test("get", () => {
     const s = pl.Series([2, 3, 9, -1]);
-    const [two,, nine] = s;
+    const [two, , nine] = s;
     expect(two).toStrictEqual(2);
     expect(nine).toStrictEqual(9);
   });
@@ -837,7 +837,7 @@ describe("StringFunctions", () => {
   ${"contains"}      | ${pl.Series(["f1", "f0"]).str.contains(/[0]/)}   | ${pl.Series([false, true])}
   ${"lengths"}       | ${pl.Series(["apple", "ham"]).str.lengths()}     | ${pl.Series([5, 3])}
   ${"slice"}         | ${pl.Series(["apple", "ham"]).str.slice(1)}      | ${pl.Series(["pple", "am"])}
-  `("$# $name expected matches actual", ({expected, actual}) => {
+  `("$# $name expected matches actual", ({ expected, actual }) => {
 
     expect(expected).toStrictEqual(actual);
   });
@@ -856,8 +856,8 @@ describe("StringFunctions", () => {
   });
   test("hex decode strict", () => {
     const s = pl.Series("encoded", ["666f6f", "626172", "invalid", null]);
-    const fn0  = () => s.str.decode("hex", true).alias("decoded");
-    const fn1  = () => s.str.decode({encoding: "hex", strict: true}).alias("decoded");
+    const fn0 = () => s.str.decode("hex", true).alias("decoded");
+    const fn1 = () => s.str.decode({ encoding: "hex", strict: true }).alias("decoded");
     expect(fn0).toThrow();
     expect(fn1).toThrow();
   });
@@ -869,8 +869,8 @@ describe("StringFunctions", () => {
   });
   test("base64 decode strict", () => {
     const s = pl.Series("encoded", ["Zm9v", "YmFy", "not base64 encoded", null]);
-    const fn0  = () => s.str.decode("base64", true).alias("decoded");
-    const fn1  = () => s.str.decode({encoding: "base64", strict: true}).alias("decoded");
+    const fn0 = () => s.str.decode("base64", true).alias("decoded");
+    const fn1 = () => s.str.decode({ encoding: "base64", strict: true }).alias("decoded");
     expect(fn0).toThrow();
     expect(fn1).toThrow();
   });
@@ -878,7 +878,7 @@ describe("StringFunctions", () => {
     const s = pl.Series("encoded", ["Zm9v", "YmFy", "invalid", null]);
     const decoded = pl.Series("decoded", ["foo", "bar", null, null]);
 
-    const actual =  s.str.decode("base64").alias("decoded");
+    const actual = s.str.decode("base64").alias("decoded");
     expect(actual).toSeriesEqual(decoded);
   });
 });
