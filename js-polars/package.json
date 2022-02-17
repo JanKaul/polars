@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "wasm-pack build"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
