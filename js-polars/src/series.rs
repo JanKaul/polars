@@ -1,7 +1,7 @@
 use crate::{console_log, log};
 use js_sys::Error;
 use polars_core::{
-    datatypes::{DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
+    datatypes::{BooleanChunked, DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
     prelude::{
         Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries, NewChunkedArray,
         Series as PSeries, UInt32Chunked, Utf8Chunked,
@@ -26,11 +26,16 @@ impl Series {
     #[inline]
     fn new_array(name: &str, values: &js_sys::Array) -> Result<Series, Error> {
         let first = &values.get(0);
-        if first.as_f64().is_some() {
+        if first.is_instance_of::<js_sys::Number>() {
             let series = Float64Chunked::from_iter_options(name, values.iter().map(|v| v.as_f64()))
                 .into_series();
             Ok(Series { series })
-        } else if first.as_string().is_some() {
+        } else if first.is_instance_of::<js_sys::Boolean>() {
+            let series =
+                BooleanChunked::from_iter_options(name, values.iter().map(|v| v.as_bool()))
+                    .into_series();
+            Ok(Series { series })
+        } else if first.is_instance_of::<js_sys::JsString>() {
             let series = Utf8Chunked::from_iter_options(name, values.iter().map(|v| v.as_string()))
                 .into_series();
             Ok(Series { series })
