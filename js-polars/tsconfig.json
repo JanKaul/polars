@@ -2,6 +2,7 @@
     "compilerOptions": {
         "module": "es2015",
         "target": "ES2020",
+        "moduleResolution": "node",
         "esModuleInterop": true,
         "allowJs": true,
         "baseUrl": ".",
@@ -11,9 +12,6 @@
             ],
             "@polars": [
                 "./pkg/polars"
-            ],
-            "*": [
-                "./node_modules/*"
             ],
         }
     },
