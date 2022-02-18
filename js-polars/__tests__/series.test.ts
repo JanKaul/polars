@@ -193,6 +193,7 @@ describe("typedArrays", () => {
   });
   test("float64", () => {
     const float64Array = new Float64Array([1, 2, 3]);
+    // @ts-ignore
     const actual = new pl.Series(float64Array).toArray();
     const expected = [...float64Array];
     expect(actual).toEqual(expected);
@@ -202,6 +203,7 @@ describe("typedArrays", () => {
       new Float64Array([1, 2, 3]),
       new Float64Array([33, 44, 55]),
     ];
+    // @ts-ignore
     const actual = new pl.Series(float64Arrays).toArray();
     const expected = float64Arrays.map(i => [...i]);
     expect(actual).toEqual(expected);
@@ -211,6 +213,7 @@ describe("typedArrays", () => {
       new Float64Array([33, 44, 55]),
       new BigUint64Array([1n, 2n, 3n]),
     ];
+    // @ts-ignore
     const fn = () => new pl.Series(float64Arrays).toArray();
     expect(fn).toThrow();
   });

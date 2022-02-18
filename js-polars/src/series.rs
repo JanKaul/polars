@@ -1,7 +1,7 @@
 use crate::{console_log, log};
 use js_sys::Error;
 use polars_core::{
-    datatypes::{Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
+    datatypes::{DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
     prelude::{
         Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries, NewChunkedArray,
         Series as PSeries, UInt32Chunked, Utf8Chunked,
@@ -283,5 +283,110 @@ impl Series {
     #[wasm_bindgen(js_name = argSort)]
     pub fn argsort(&self, reverse: bool) -> Self {
         self.series.argsort(reverse).into_series().into()
+    }
+
+    #[wasm_bindgen(js_name = toArray)]
+    pub fn to_array(&self) -> Result<js_sys::Object, Error> {
+        match self.series._dtype() {
+            DataType::Int8 => self
+                .series
+                .i8()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Int8Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::Int16 => self
+                .series
+                .i16()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Int16Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::Int32 => self
+                .series
+                .i32()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Int32Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::UInt8 => self
+                .series
+                .u8()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Uint8Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::UInt16 => self
+                .series
+                .u16()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Uint16Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::UInt32 => self
+                .series
+                .u32()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Uint32Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::Float32 => self
+                .series
+                .f32()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Float32Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::Float64 => self
+                .series
+                .f64()
+                .and_then(|x| {
+                    x.cont_slice().map(|x| {
+                        let arr = js_sys::Float64Array::new_with_length(x.len() as u32);
+                        arr.copy_from(x);
+                        arr.into()
+                    })
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            DataType::Utf8 => self
+                .series
+                .utf8()
+                .map(|x| {
+                    x.into_iter()
+                        .map(|y| y.map(|z| JsValue::from_str(z)).unwrap_or(JsValue::null()))
+                        .collect::<js_sys::Array>()
+                        .into()
+                })
+                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            _ => todo!(),
+        }
     }
 }
