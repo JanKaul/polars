@@ -11,5 +11,6 @@ export default {
   moduleNameMapper: {
     '@polars/index': '<rootDir>/pkg/polars',
     '@polars': '<rootDir>/pkg/polars',
+    'chance': '<rootDir>/node_modules/chance',
   },
 };
