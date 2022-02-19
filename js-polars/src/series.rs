@@ -3,9 +3,10 @@ use js_sys::Error;
 use polars_core::{
     datatypes::{BooleanChunked, DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
     prelude::{
-        ChunkCompare, Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries, NewChunkedArray,
-        Series as PSeries, UInt32Chunked, Utf8Chunked,
+        ChunkCompare, FillNullStrategy, Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries,
+        NewChunkedArray, Series as PSeries, UInt32Chunked, Utf8Chunked,
     },
+    series::ops::NullBehavior,
 };
 use std::ops::{BitAnd, BitOr};
 use wasm_bindgen::{prelude::*, JsCast};
@@ -212,18 +213,23 @@ impl Series {
     }
 
     #[wasm_bindgen(js_name = cumSum)]
-    pub fn cumsum(&self, reverse: bool) -> Self {
-        self.series.cumsum(reverse).into()
+    pub fn cumsum(&self, reverse: Option<bool>) -> Self {
+        self.series.cumsum(reverse.unwrap_or(false)).into()
+    }
+
+    #[wasm_bindgen(js_name = cumProd)]
+    pub fn cumprod(&self, reverse: Option<bool>) -> Self {
+        self.series.cumprod(reverse.unwrap_or(false)).into()
     }
 
     #[wasm_bindgen(js_name = cumMax)]
-    pub fn cummax(&self, reverse: bool) -> Self {
-        self.series.cummax(reverse).into()
+    pub fn cummax(&self, reverse: Option<bool>) -> Self {
+        self.series.cummax(reverse.unwrap_or(false)).into()
     }
 
     #[wasm_bindgen(js_name = cumMin)]
-    pub fn cummin(&self, reverse: bool) -> Self {
-        self.series.cummin(reverse).into()
+    pub fn cummin(&self, reverse: Option<bool>) -> Self {
+        self.series.cummin(reverse.unwrap_or(false)).into()
     }
 
     #[wasm_bindgen(js_name = chunkLengths)]
@@ -301,20 +307,124 @@ impl Series {
         (self.series.tail(length)).into()
     }
 
-    pub fn sort(&mut self, reverse: bool) -> Self {
-        (self.series.sort(reverse)).into()
+    pub fn sort(&mut self, reverse: Option<bool>) -> Self {
+        (self.series.sort(reverse.unwrap_or(false))).into()
     }
 
     #[wasm_bindgen(js_name = argSort)]
-    pub fn argsort(&self, reverse: bool) -> Self {
-        self.series.argsort(reverse).into_series().into()
+    pub fn argsort(&self, reverse: Option<bool>) -> Self {
+        self.series
+            .argsort(reverse.unwrap_or(false))
+            .into_series()
+            .into()
     }
 
     #[wasm_bindgen(js_name = eq)]
-    pub fn equal(&self, other: Series) -> Series {
-        Series {
-            series: self.series.equal(&other.series).into_series(),
-        }
+    pub fn equal(&self, other: &Series) -> Self {
+        self.series.equal(&other.series).into_series().into()
+    }
+
+    pub fn abs(&self) -> Result<Series, Error> {
+        Ok(self
+            .series
+            .abs()
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
+            .into_series()
+            .into())
+    }
+
+    #[wasm_bindgen(js_name = "argMax")]
+    pub fn arg_max(&self) -> Option<usize> {
+        self.series.arg_max()
+    }
+
+    #[wasm_bindgen(js_name = "argMin")]
+    pub fn arg_min(&self) -> Option<usize> {
+        self.series.arg_min()
+    }
+
+    #[wasm_bindgen(js_name = argTrue)]
+    pub fn arg_true(&self) -> Result<Series, Error> {
+        Ok(self
+            .series
+            .arg_true()
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
+            .into_series()
+            .into())
+    }
+
+    #[wasm_bindgen(js_name = argUnique)]
+    pub fn arg_unique(&self) -> Result<Series, Error> {
+        Ok(self
+            .series
+            .arg_unique()
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
+            .into_series()
+            .into())
+    }
+
+    pub fn cast(&self, dtype: usize) -> Result<Series, Error> {
+        Ok(self
+            .series
+            .cast(&DataType::from(TsDataType::from(dtype)))
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
+            .into_series()
+            .into())
+    }
+
+    pub fn clone(&self) -> Self {
+        self.series.clone().into()
+    }
+
+    pub fn diff(&self, n: usize, null_behavior: String) -> Self {
+        let null_behavior = if null_behavior.eq("drop") {
+            NullBehavior::Drop
+        } else {
+            NullBehavior::Ignore
+        };
+        self.series.diff(n, null_behavior).into()
+    }
+
+    #[wasm_bindgen(js_name = dropNulls)]
+    pub fn drop_nulls(&self) -> Self {
+        self.series.drop_nulls().into()
+    }
+
+    #[wasm_bindgen(js_name = fillNull)]
+    pub fn fill_null(&self, fill_null_strategy: String) -> Result<Series, Error> {
+        let fill_null_strategy = if fill_null_strategy.eq("backward") {
+            FillNullStrategy::Backward
+        } else if fill_null_strategy.eq("forward") {
+            FillNullStrategy::Forward
+        } else if fill_null_strategy.eq("mean") {
+            FillNullStrategy::Mean
+        } else if fill_null_strategy.eq("max") {
+            FillNullStrategy::Max
+        } else if fill_null_strategy.eq("min") {
+            FillNullStrategy::Min
+        } else if fill_null_strategy.eq("zero") {
+            FillNullStrategy::Zero
+        } else if fill_null_strategy.eq("one") {
+            FillNullStrategy::One
+        } else if fill_null_strategy.eq("maxbound") {
+            FillNullStrategy::MaxBound
+        } else {
+            FillNullStrategy::MinBound
+        };
+        Ok(self
+            .series
+            .fill_null(fill_null_strategy)
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
+            .into())
+    }
+
+    pub fn floor(&self) -> Result<Series, Error> {
+        Ok(self
+            .series
+            .floor()
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
+            .into_series()
+            .into())
     }
 
     #[wasm_bindgen(js_name = toArray)]
