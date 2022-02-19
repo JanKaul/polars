@@ -363,7 +363,8 @@ describe("series", () => {
 
   describe("comparator", () => {
     it("can perform 'eq", () => {
-      const s = new pl.Series("", [1, 2, 3]).eq(1);
+      // @ts-ignore
+      const s = new pl.Series("", [1, 2, 3]).eq(new pl.Series([1]));
       expect([...s]).toEqual([true, false, false]);
     });
   });

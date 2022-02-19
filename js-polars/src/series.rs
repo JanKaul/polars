@@ -3,7 +3,7 @@ use js_sys::Error;
 use polars_core::{
     datatypes::{BooleanChunked, DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
     prelude::{
-        Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries, NewChunkedArray,
+        ChunkCompare, Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries, NewChunkedArray,
         Series as PSeries, UInt32Chunked, Utf8Chunked,
     },
 };
@@ -308,6 +308,13 @@ impl Series {
     #[wasm_bindgen(js_name = argSort)]
     pub fn argsort(&self, reverse: bool) -> Self {
         self.series.argsort(reverse).into_series().into()
+    }
+
+    #[wasm_bindgen(js_name = eq)]
+    pub fn equal(&self, other: Series) -> Series {
+        Series {
+            series: self.series.equal(&other.series).into_series(),
+        }
     }
 
     #[wasm_bindgen(js_name = toArray)]
