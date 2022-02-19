@@ -8,7 +8,7 @@ use polars_core::{
     },
     series::ops::NullBehavior,
 };
-use std::ops::{BitAnd, BitOr};
+use std::ops::{BitAnd, BitOr, Deref};
 use wasm_bindgen::{prelude::*, JsCast};
 
 #[wasm_bindgen]
@@ -20,6 +20,14 @@ pub struct Series {
 impl From<PSeries> for Series {
     fn from(series: PSeries) -> Self {
         Self { series }
+    }
+}
+
+impl Deref for Series {
+    type Target = PSeries;
+
+    fn deref(&self) -> &Self::Target {
+        &self.series
     }
 }
 
