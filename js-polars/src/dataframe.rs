@@ -100,10 +100,10 @@ impl DataFrame {
     }
 
     #[wasm_bindgen(js_name = getColumn)]
-    pub fn get_column(&self, name: String) -> Result<JsValue, Error> {
+    pub fn get_column(&self, name: String) -> Result<Series, Error> {
         self.df
             .column(&name)
             .map_err(|x| js_sys::Error::new(&format!("{}", x)))
-            .map(|x| JsValue::from(Series::from(x.clone())))
+            .map(|x| Series::from(x.clone()))
     }
 }
