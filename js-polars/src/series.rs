@@ -1,4 +1,4 @@
-use crate::{console_log, log};
+use crate::{console_log, datatypes::TsDataType, log};
 use js_sys::Error;
 use polars_core::{
     datatypes::{BooleanChunked, DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
@@ -51,7 +51,7 @@ impl Series {
     pub fn new(
         arg1: &JsValue,
         arg2: &JsValue,
-        arg3: Option<String>,
+        arg3: Option<usize>,
         arg4: Option<bool>,
     ) -> Result<Series, Error> {
         let (name, values, _dtype, _strict) = if arg2.is_undefined() {
@@ -59,9 +59,19 @@ impl Series {
         } else if arg3.is_none() {
             (arg1.as_string().unwrap_or("".to_string()), arg2, None, None)
         } else if arg4.is_none() {
-            (arg1.as_string().unwrap_or("".to_string()), arg2, arg3, None)
+            (
+                arg1.as_string().unwrap_or("".to_string()),
+                arg2,
+                arg3.map(|x| polars_core::datatypes::DataType::from(TsDataType::from(x))),
+                None,
+            )
         } else {
-            (arg1.as_string().unwrap_or("".to_string()), arg2, arg3, arg4)
+            (
+                arg1.as_string().unwrap_or("".to_string()),
+                arg2,
+                arg3.map(|x| polars_core::datatypes::DataType::from(TsDataType::from(x))),
+                arg4,
+            )
         };
         match values
             .dyn_ref::<js_sys::Array>()
@@ -139,10 +149,6 @@ impl Series {
         format!("{}", self.series)
     }
 
-    pub fn log(&self) {
-        console_log!("{}", self.series)
-    }
-
     #[wasm_bindgen(js_name = toJSON)]
     pub fn to_json(&self) -> String {
         let mut series_fmt = String::with_capacity(10);
@@ -159,6 +165,20 @@ impl Series {
         series_fmt.push(']');
 
         format!(r#"{{ {}: {} }}"#, self.series.name(), series_fmt)
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn length(&self) -> usize {
+        self.series.len()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn dtype(&self) -> String {
+        format!("{}", self.series.dtype())
+    }
+
+    pub fn log(&self) {
+        console_log!("{}", self.series)
     }
 
     pub fn rechunk(&mut self, in_place: bool) -> Option<Series> {

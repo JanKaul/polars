@@ -1,8 +1,9 @@
-mod series;
 mod dataframe;
+mod datatypes;
+mod series;
 
-use wasm_bindgen::prelude::*;
 use polars_core::error::PolarsError;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -19,7 +20,6 @@ macro_rules! console_log {
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 
 pub struct JsPolarsError(PolarsError);
 

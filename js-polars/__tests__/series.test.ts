@@ -1,5 +1,5 @@
 /* eslint-disable newline-per-chained-call */
-import pl from "@polars";
+import * as pl from "@polars";
 import { InvalidOperationError } from "../polars/error";
 import Chance from "chance";
 
