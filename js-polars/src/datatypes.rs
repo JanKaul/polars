@@ -25,6 +25,7 @@ export import Object = DataType.Object;
 export import Categorical = DataType.Categorical;
 "#;
 
+#[wasm_bindgen]
 pub enum DataType {
     Int8,
     Int16,
