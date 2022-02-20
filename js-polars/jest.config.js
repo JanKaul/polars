@@ -13,4 +13,5 @@ export default {
     '@polars': '<rootDir>/pkg/polars',
     'chance': '<rootDir>/node_modules/chance',
   },
+  setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
 };

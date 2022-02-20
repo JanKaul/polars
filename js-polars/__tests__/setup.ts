@@ -102,7 +102,7 @@ Received:
 });
 
 export const df = () => {
-  const df = pl.DataFrame(
+  const df = new pl.DataFrame(
     {
       "bools": [false, true, false],
       "bools_nulls": [null, true, false],
