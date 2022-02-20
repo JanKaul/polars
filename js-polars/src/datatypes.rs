@@ -1,4 +1,4 @@
-use polars_core::datatypes::{AnyValue as PAnyValue, DataType, TimeUnit};
+use polars_core::datatypes::{AnyValue as PAnyValue, DataType as PDataType, TimeUnit};
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 use crate::series::Series;
@@ -25,8 +25,7 @@ export import Object = DataType.Object;
 export import Categorical = DataType.Categorical;
 "#;
 
-#[wasm_bindgen(js_name = DataType)]
-pub enum TsDataType {
+pub enum DataType {
     Int8,
     Int16,
     Int32,
@@ -47,78 +46,78 @@ pub enum TsDataType {
     Categorical,
 }
 
-impl From<usize> for TsDataType {
+impl From<usize> for DataType {
     fn from(n: usize) -> Self {
         match n {
-            0 => TsDataType::Int8,
-            1 => TsDataType::Int16,
-            2 => TsDataType::Int32,
-            3 => TsDataType::Int64,
-            4 => TsDataType::UInt8,
-            5 => TsDataType::UInt16,
-            6 => TsDataType::UInt32,
-            7 => TsDataType::UInt64,
-            8 => TsDataType::Float32,
-            9 => TsDataType::Float64,
-            10 => TsDataType::Bool,
-            11 => TsDataType::Utf8,
-            12 => TsDataType::List,
-            13 => TsDataType::Date,
-            14 => TsDataType::Datetime,
-            15 => TsDataType::Time,
-            16 => TsDataType::Object,
-            17 => TsDataType::Categorical,
+            0 => DataType::Int8,
+            1 => DataType::Int16,
+            2 => DataType::Int32,
+            3 => DataType::Int64,
+            4 => DataType::UInt8,
+            5 => DataType::UInt16,
+            6 => DataType::UInt32,
+            7 => DataType::UInt64,
+            8 => DataType::Float32,
+            9 => DataType::Float64,
+            10 => DataType::Bool,
+            11 => DataType::Utf8,
+            12 => DataType::List,
+            13 => DataType::Date,
+            14 => DataType::Datetime,
+            15 => DataType::Time,
+            16 => DataType::Object,
+            17 => DataType::Categorical,
             _ => todo!(),
         }
     }
 }
 
-impl From<TsDataType> for usize {
-    fn from(dtype: TsDataType) -> Self {
+impl From<DataType> for usize {
+    fn from(dtype: DataType) -> Self {
         match dtype {
-            TsDataType::Int8 => 0,
-            TsDataType::Int16 => 1,
-            TsDataType::Int32 => 2,
-            TsDataType::Int64 => 3,
-            TsDataType::UInt8 => 4,
-            TsDataType::UInt16 => 5,
-            TsDataType::UInt32 => 6,
-            TsDataType::UInt64 => 7,
-            TsDataType::Float32 => 8,
-            TsDataType::Float64 => 9,
-            TsDataType::Bool => 10,
-            TsDataType::Utf8 => 11,
-            TsDataType::List => 12,
-            TsDataType::Date => 13,
-            TsDataType::Datetime => 14,
-            TsDataType::Time => 15,
-            TsDataType::Object => 16,
-            TsDataType::Categorical => 17,
+            DataType::Int8 => 0,
+            DataType::Int16 => 1,
+            DataType::Int32 => 2,
+            DataType::Int64 => 3,
+            DataType::UInt8 => 4,
+            DataType::UInt16 => 5,
+            DataType::UInt32 => 6,
+            DataType::UInt64 => 7,
+            DataType::Float32 => 8,
+            DataType::Float64 => 9,
+            DataType::Bool => 10,
+            DataType::Utf8 => 11,
+            DataType::List => 12,
+            DataType::Date => 13,
+            DataType::Datetime => 14,
+            DataType::Time => 15,
+            DataType::Object => 16,
+            DataType::Categorical => 17,
         }
     }
 }
 
-impl From<TsDataType> for DataType {
-    fn from(dtype: TsDataType) -> Self {
+impl From<DataType> for PDataType {
+    fn from(dtype: DataType) -> Self {
         match dtype {
-            TsDataType::Int8 => DataType::Int8,
-            TsDataType::Int16 => DataType::Int16,
-            TsDataType::Int32 => DataType::Int32,
-            TsDataType::Int64 => DataType::Int64,
-            TsDataType::UInt8 => DataType::UInt8,
-            TsDataType::UInt16 => DataType::UInt16,
-            TsDataType::UInt32 => DataType::UInt32,
-            TsDataType::UInt64 => DataType::UInt64,
-            TsDataType::Float32 => DataType::Float32,
-            TsDataType::Float64 => DataType::Float64,
-            TsDataType::Bool => DataType::Boolean,
-            TsDataType::Utf8 => DataType::Utf8,
-            TsDataType::List => DataType::Unknown,
-            TsDataType::Date => DataType::Date,
-            TsDataType::Datetime => DataType::Datetime(TimeUnit::Milliseconds, None),
-            TsDataType::Time => DataType::Time,
-            TsDataType::Object => DataType::Unknown,
-            TsDataType::Categorical => DataType::Categorical,
+            DataType::Int8 => PDataType::Int8,
+            DataType::Int16 => PDataType::Int16,
+            DataType::Int32 => PDataType::Int32,
+            DataType::Int64 => PDataType::Int64,
+            DataType::UInt8 => PDataType::UInt8,
+            DataType::UInt16 => PDataType::UInt16,
+            DataType::UInt32 => PDataType::UInt32,
+            DataType::UInt64 => PDataType::UInt64,
+            DataType::Float32 => PDataType::Float32,
+            DataType::Float64 => PDataType::Float64,
+            DataType::Bool => PDataType::Boolean,
+            DataType::Utf8 => PDataType::Utf8,
+            DataType::List => PDataType::Unknown,
+            DataType::Date => PDataType::Date,
+            DataType::Datetime => PDataType::Datetime(TimeUnit::Milliseconds, None),
+            DataType::Time => PDataType::Time,
+            DataType::Object => PDataType::Unknown,
+            DataType::Categorical => PDataType::Categorical,
         }
     }
 }

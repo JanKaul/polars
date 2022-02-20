@@ -1,11 +1,14 @@
 use crate::{
     console_log,
-    datatypes::{AnyValue, TsDataType},
+    datatypes::{AnyValue, DataType},
     log,
 };
 use js_sys::Error;
 use polars_core::{
-    datatypes::{BooleanChunked, DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
+    datatypes::{
+        BooleanChunked, DataType as PDataType, Int16Chunked, Int8Chunked, UInt16Chunked,
+        UInt8Chunked,
+    },
     prelude::{
         ChunkCompare, FillNullStrategy, Float32Chunked, Float64Chunked, Int32Chunked, IntoSeries,
         NewChunkedArray, Series as PSeries, UInt32Chunked, Utf8Chunked,
@@ -75,14 +78,14 @@ impl Series {
             (
                 arg1.as_string().unwrap_or("".to_string()),
                 arg2,
-                arg3.map(|x| polars_core::datatypes::DataType::from(TsDataType::from(x))),
+                arg3.map(|x| polars_core::datatypes::DataType::from(DataType::from(x))),
                 None,
             )
         } else {
             (
                 arg1.as_string().unwrap_or("".to_string()),
                 arg2,
-                arg3.map(|x| polars_core::datatypes::DataType::from(TsDataType::from(x))),
+                arg3.map(|x| polars_core::datatypes::DataType::from(DataType::from(x))),
                 arg4,
             )
         };
@@ -378,7 +381,7 @@ impl Series {
     pub fn cast(&self, dtype: usize) -> Result<Series, Error> {
         Ok(self
             .series
-            .cast(&DataType::from(TsDataType::from(dtype)))
+            .cast(&PDataType::from(DataType::from(dtype)))
             .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
             .into_series()
             .into())
@@ -446,7 +449,7 @@ impl Series {
     #[wasm_bindgen(js_name = toArray)]
     pub fn to_array(&self) -> Result<js_sys::Object, Error> {
         match self.series._dtype() {
-            DataType::Int8 => self
+            PDataType::Int8 => self
                 .series
                 .i8()
                 .and_then(|x| {
@@ -457,7 +460,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::Int16 => self
+            PDataType::Int16 => self
                 .series
                 .i16()
                 .and_then(|x| {
@@ -468,7 +471,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::Int32 => self
+            PDataType::Int32 => self
                 .series
                 .i32()
                 .and_then(|x| {
@@ -479,7 +482,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::UInt8 => self
+            PDataType::UInt8 => self
                 .series
                 .u8()
                 .and_then(|x| {
@@ -490,7 +493,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::UInt16 => self
+            PDataType::UInt16 => self
                 .series
                 .u16()
                 .and_then(|x| {
@@ -501,7 +504,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::UInt32 => self
+            PDataType::UInt32 => self
                 .series
                 .u32()
                 .and_then(|x| {
@@ -512,7 +515,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::Float32 => self
+            PDataType::Float32 => self
                 .series
                 .f32()
                 .and_then(|x| {
@@ -523,7 +526,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::Float64 => self
+            PDataType::Float64 => self
                 .series
                 .f64()
                 .and_then(|x| {
@@ -534,7 +537,7 @@ impl Series {
                     })
                 })
                 .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            DataType::Utf8 => self
+            PDataType::Utf8 => self
                 .series
                 .utf8()
                 .map(|x| {
