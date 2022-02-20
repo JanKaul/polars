@@ -1,4 +1,8 @@
-use crate::{console_log, datatypes::TsDataType, log};
+use crate::{
+    console_log,
+    datatypes::{AnyValue, TsDataType},
+    log,
+};
 use js_sys::Error;
 use polars_core::{
     datatypes::{BooleanChunked, DataType, Int16Chunked, Int8Chunked, UInt16Chunked, UInt8Chunked},
@@ -433,6 +437,10 @@ impl Series {
             .map_err(|x| js_sys::Error::new(&format!("{}", x)))?
             .into_series()
             .into())
+    }
+
+    pub fn get(&self, index: usize) -> JsValue {
+        AnyValue::from(self.series.get(index)).into()
     }
 
     #[wasm_bindgen(js_name = toArray)]

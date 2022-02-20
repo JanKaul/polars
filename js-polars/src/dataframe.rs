@@ -3,6 +3,7 @@ use js_sys::Array;
 use js_sys::Error;
 use js_sys::Object;
 use polars_core::prelude::DataFrame as PDataFrame;
+use polars_core::prelude::DistinctKeepStrategy;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -106,4 +107,84 @@ impl DataFrame {
             .map_err(|x| js_sys::Error::new(&format!("{}", x)))
             .map(|x| Series::from(x.clone()))
     }
+
+    pub fn clone(&self) -> Self {
+        Self::from(self.df.clone())
+    }
+
+    #[wasm_bindgen(js_name = toFrameEqual)]
+    pub fn frame_equal(&self, other: DataFrame) -> bool {
+        self.df.frame_equal(&other.df)
+    }
+
+    pub fn drop(&self, names: Box<[JsValue]>) -> Result<DataFrame, Error> {
+        let mut clone = self.df.clone();
+        let names = names
+            .into_iter()
+            .map(|y| y.as_string())
+            .collect::<Option<Box<[String]>>>()
+            .ok_or(Error::new("Error: Invalid column names to drop."))?;
+        names
+            .into_iter()
+            .fold(Ok::<_, Error>(&mut clone), |acc, name| {
+                let df = acc?;
+                let _ = df
+                    .drop_in_place(name)
+                    .map_err(|x| js_sys::Error::new(&format!("{}", x)))?;
+                Ok(df)
+            })?;
+        Ok(clone.into())
+    }
+
+    #[wasm_bindgen(js_name = dropDuplicates)]
+    pub fn drop_duplicates(
+        &self,
+        options: Option<DropDuplicateOptions>,
+    ) -> Result<DataFrame, Error> {
+        let (subset, distinct_keep_strategy) = match options {
+            Some(options) => {
+                let subset = subset(&options).and_then(|x| {
+                    x.into_iter()
+                        .map(|y| y.as_string())
+                        .collect::<Option<Box<[String]>>>()
+                });
+                let distinct_keep_strategy = maintainOrder(&options).map(|x| {
+                    if x {
+                        DistinctKeepStrategy::First
+                    } else {
+                        DistinctKeepStrategy::Last
+                    }
+                });
+
+                (subset, distinct_keep_strategy)
+            }
+            None => (None, None),
+        };
+
+        self.df
+            .distinct(
+                subset.as_ref().map(|x| &**x),
+                distinct_keep_strategy.unwrap_or(DistinctKeepStrategy::First),
+            )
+            .map(|x| x.into())
+            .map_err(|x| js_sys::Error::new(&format!("{}", x)))
+    }
+}
+
+#[wasm_bindgen(typescript_custom_section)]
+const ITEXT_STYLE: &'static str = r#"
+interface DropDuplicateOptions {
+    maintainOrder?: Boolean,
+    subset?: String[]
+}
+"#;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "DropDuplicateOptions")]
+    pub type DropDuplicateOptions;
+    #[wasm_bindgen(getter)]
+    fn maintainOrder(this: &DropDuplicateOptions) -> Option<bool>;
+    #[wasm_bindgen(getter)]
+    fn subset(this: &DropDuplicateOptions) -> Option<Box<[JsValue]>>;
 }

@@ -1,5 +1,7 @@
-use polars_core::datatypes::{DataType, TimeUnit};
-use wasm_bindgen::prelude::wasm_bindgen;
+use polars_core::datatypes::{AnyValue as PAnyValue, DataType, TimeUnit};
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+
+use crate::series::Series;
 
 #[wasm_bindgen(typescript_custom_section)]
 const DATATYPES: &'static str = r#"
@@ -117,6 +119,35 @@ impl From<TsDataType> for DataType {
             TsDataType::Time => DataType::Time,
             TsDataType::Object => DataType::Unknown,
             TsDataType::Categorical => DataType::Categorical,
+        }
+    }
+}
+
+pub struct AnyValue<'a>(PAnyValue<'a>);
+
+impl<'a> From<PAnyValue<'a>> for AnyValue<'a> {
+    fn from(any: PAnyValue<'a>) -> Self {
+        AnyValue(any)
+    }
+}
+
+impl From<AnyValue<'_>> for JsValue {
+    fn from(any: AnyValue) -> Self {
+        match any.0 {
+            PAnyValue::Null => JsValue::null(),
+            PAnyValue::Boolean(bool) => JsValue::from_bool(bool),
+            PAnyValue::Utf8(str) => JsValue::from_str(str),
+            PAnyValue::UInt8(u8) => JsValue::from(u8),
+            PAnyValue::UInt16(u16) => JsValue::from(u16),
+            PAnyValue::UInt32(u32) => JsValue::from(u32),
+            PAnyValue::UInt64(u64) => JsValue::from(u64),
+            PAnyValue::Int8(i8) => JsValue::from(i8),
+            PAnyValue::Int16(i16) => JsValue::from(i16),
+            PAnyValue::Int32(i32) => JsValue::from(i32),
+            PAnyValue::Int64(i64) => JsValue::from(i64),
+            PAnyValue::Float32(f32) => JsValue::from(f32),
+            PAnyValue::Float64(f64) => JsValue::from(f64),
+            PAnyValue::List(series) => JsValue::from(Series::from(series)),
         }
     }
 }
