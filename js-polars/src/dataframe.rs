@@ -112,7 +112,7 @@ impl DataFrame {
         Self::from(self.df.clone())
     }
 
-    #[wasm_bindgen(js_name = toFrameEqual)]
+    #[wasm_bindgen(js_name = frameEqual)]
     pub fn frame_equal(&self, other: DataFrame) -> bool {
         self.df.frame_equal(&other.df)
     }
