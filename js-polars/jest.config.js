@@ -14,4 +14,5 @@ export default {
     'chance': '<rootDir>/node_modules/chance',
   },
   setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
+  testPathIgnorePatterns: ["<rootDir>/__tests__/setup.ts"]
 };
