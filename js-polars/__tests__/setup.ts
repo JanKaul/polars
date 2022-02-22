@@ -1,4 +1,4 @@
-import pl from "@polars/index";
+import * as pl from "@polars";
 
 declare global {
   namespace jest {
@@ -113,28 +113,28 @@ Received:
   }
 });
 
-// export const df = () => {
-//   const df = new pl.DataFrame(
-//     {
-//       "bools": [false, true, false],
-//       "bools_nulls": [null, true, false],
-//       "int": [1, 2, 3],
-//       "int_nulls": [1, null, 3],
-//       "bigint": [1n, 2n, 3n],
-//       "bigint_nulls": [1n, null, 3n],
-//       "floats": [1.0, 2.0, 3.0],
-//       "floats_nulls": [1.0, null, 3.0],
-//       "strings": ["foo", "bar", "ham"],
-//       "strings_nulls": ["foo", null, "ham"],
-//       "date": [new Date(), new Date(), new Date()],
-//       "datetime": [13241324, 12341256, 12341234],
-//     });
+export const df = () => {
+  const df = new pl.DataFrame(
+    {
+      "bools": [false, true, false],
+      "bools_nulls": [null, true, false],
+      "int": [1, 2, 3],
+      "int_nulls": [1, null, 3],
+      "bigint": [1n, 2n, 3n],
+      "bigint_nulls": [1n, null, 3n],
+      "floats": [1.0, 2.0, 3.0],
+      "floats_nulls": [1.0, null, 3.0],
+      "strings": ["foo", "bar", "ham"],
+      "strings_nulls": ["foo", null, "ham"],
+      "date": [new Date(), new Date(), new Date()],
+      "datetime": [13241324, 12341256, 12341234],
+    });
 
-//   return df.withColumns(
+  return df.lazy().withColumns(
 
-//     pl.col("date").cast(pl.Date),
-//     pl.col("datetime").cast(pl.Datetime),
-//     pl.col("strings").cast(pl.Categorical)
-//       .alias("cat")
-//   );
-// };
+    [pl.col("date").cast(pl.Date),
+    pl.col("datetime").cast(pl.Datetime),
+    pl.col("strings").cast(pl.Categorical)
+      .alias("cat")]
+  );
+};

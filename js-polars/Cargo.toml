@@ -1,5 +1,5 @@
 [package]
-name = "polars"
+name = "js-polars"
 version = "0.0.1"
 authors = ["Ritchie Vink"]
 documentation = "https://pola-rs.github.io/polars-book/"
@@ -17,6 +17,10 @@ crate-type = ["cdylib"]
 wasm-bindgen = "0.2.34"
 js-sys = "0.3.56"
 wee_alloc = { version = "0.4.5" }
+
+[dependencies.polars-lazy]
+path = "../polars/polars-lazy"
+features = ["private"]
 
 [dependencies.polars-core]
 path = "../polars/polars-core"

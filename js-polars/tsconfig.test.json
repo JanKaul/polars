@@ -8,11 +8,11 @@
         "baseUrl": ".",
         "paths": {
             "@polars/index": [
-                "./pkg/polars"
+                "./pkg/js_polars"
             ],
             "@polars": [
-                "./pkg/polars"
+                "./pkg/js_polars"
             ],
-        }
+        },
     },
 }
