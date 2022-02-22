@@ -1,11 +1,10 @@
 use std::ops::Deref;
 
 use js_sys::Error;
-use paste::paste;
 use polars_lazy::prelude::LazyFrame as PLazyFrame;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{conversion::array::StructIterator, lazy::dsl::Expr, struct_iterator};
+use crate::conversion::array::ExprArray;
 use polars_lazy::prelude::Expr as PExpr;
 
 #[wasm_bindgen]
@@ -26,17 +25,9 @@ impl From<PLazyFrame> for LazyFrame {
 }
 
 #[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(typescript_type = "Expr[]")]
-    pub type ArrayExpr;
-}
-
-struct_iterator!(ArrayExpr, Expr);
-
-#[wasm_bindgen]
 impl LazyFrame {
     #[wasm_bindgen(js_name = withColumns)]
-    pub fn with_colummns(self, exprs: &ArrayExpr) -> Result<LazyFrame, Error> {
+    pub fn with_colummns(self, exprs: &ExprArray) -> Result<LazyFrame, Error> {
         Ok(self
             .0
             .with_columns(

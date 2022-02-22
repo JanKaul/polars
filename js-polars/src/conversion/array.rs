@@ -1,3 +1,6 @@
+use crate::lazy::dsl::Expr;
+use paste::paste;
+use wasm_bindgen::prelude::wasm_bindgen;
 pub struct StructIterator<'a, T> {
     pub count: usize,
     pub len: usize,
@@ -42,3 +45,11 @@ macro_rules! struct_iterator {
         }
     };
 }
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "Expr[]")]
+    pub type ExprArray;
+}
+
+struct_iterator!(ExprArray, Expr);
