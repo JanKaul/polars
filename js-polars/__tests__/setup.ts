@@ -130,7 +130,7 @@ export const df = () => {
       "datetime": [13241324, 12341256, 12341234],
     });
 
-  return df.lazy().withColumns(
+  return df.withColumns(
 
     [pl.col("date").cast(pl.Date),
     pl.col("datetime").cast(pl.Datetime),

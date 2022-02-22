@@ -396,7 +396,7 @@ impl Series {
     }
 
     #[wasm_bindgen(js_name = toArray)]
-    pub fn to_array(&self) -> Result<js_sys::Object, Error> {
+    pub fn to_array(&self) -> Result<JsValue, Error> {
         match self.series._dtype() {
             PDataType::Int8 => series_to_typed_array!(self, i8, js_sys::Int8Array),
             PDataType::Int16 => series_to_typed_array!(self, i16, js_sys::Int16Array),
