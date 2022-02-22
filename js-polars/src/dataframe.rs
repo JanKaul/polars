@@ -1,9 +1,12 @@
+use crate::lazy::frame::LazyFrame;
+
 use super::{series::*, JsPolarsError};
 use js_sys::Array;
 use js_sys::Error;
 use js_sys::Object;
 use polars_core::prelude::DataFrame as PDataFrame;
 use polars_core::prelude::DistinctKeepStrategy;
+use polars_lazy::prelude::IntoLazy;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -75,6 +78,10 @@ impl DataFrame {
     pub fn shape(&self) -> Box<[JsValue]> {
         let (first, second) = self.df.shape();
         Box::new([JsValue::from(first), JsValue::from(second)])
+    }
+
+    pub fn lazy(self) -> LazyFrame {
+        self.df.lazy().into()
     }
 
     #[wasm_bindgen(getter)]

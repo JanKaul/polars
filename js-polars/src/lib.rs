@@ -1,6 +1,7 @@
-mod dataframe;
-mod datatypes;
-mod series;
+pub mod dataframe;
+pub mod datatypes;
+pub mod lazy;
+pub mod series;
 
 use polars_core::error::PolarsError;
 use wasm_bindgen::prelude::*;
