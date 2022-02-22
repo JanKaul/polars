@@ -1,7 +1,7 @@
 use crate::{
     console_log,
     datatypes::{AnyValue, DataType},
-    log,
+    log, series_to_typed_array, typed_array_to_series,
 };
 use js_sys::Error;
 use polars_core::{
@@ -61,14 +61,6 @@ impl Series {
     }
 }
 
-macro_rules! typed_array_to_chunked {
-    ($values:expr,$name:expr,$x:ty,$y: ident) => {
-        $values
-            .dyn_ref::<$x>()
-            .map(|x| Ok($y::from_slice($name, &x.to_vec()).into_series().into()))
-    };
-}
-
 #[wasm_bindgen]
 impl Series {
     #[wasm_bindgen(constructor)]
@@ -100,21 +92,18 @@ impl Series {
         match values
             .dyn_ref::<js_sys::Array>()
             .map(|x| Self::new_array(&name, x))
-            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Int8Array, Int8Chunked))
-            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Int16Array, Int16Chunked))
-            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Int32Array, Int32Chunked))
-            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Uint8Array, UInt8Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Int8Array, Int8Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Int16Array, Int16Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Int32Array, Int32Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Uint8Array, UInt8Chunked))
             .or_else(|| {
-                typed_array_to_chunked!(values, &name, js_sys::Uint8ClampedArray, UInt8Chunked)
+                typed_array_to_series!(values, &name, js_sys::Uint8ClampedArray, UInt8Chunked)
             })
-            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Uint16Array, UInt16Chunked))
-            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Uint32Array, UInt32Chunked))
-            .or_else(|| {
-                typed_array_to_chunked!(values, &name, js_sys::Float32Array, Float32Chunked)
-            })
-            .or_else(|| {
-                typed_array_to_chunked!(values, &name, js_sys::Float64Array, Float64Chunked)
-            }) {
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Uint16Array, UInt16Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Uint32Array, UInt32Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Float32Array, Float32Chunked))
+            .or_else(|| typed_array_to_series!(values, &name, js_sys::Float64Array, Float64Chunked))
+        {
             Some(res) => res,
             None => Err(js_sys::Error::new("Error: Wrong input for constructor.")),
         }
@@ -409,94 +398,14 @@ impl Series {
     #[wasm_bindgen(js_name = toArray)]
     pub fn to_array(&self) -> Result<js_sys::Object, Error> {
         match self.series._dtype() {
-            PDataType::Int8 => self
-                .series
-                .i8()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Int8Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::Int16 => self
-                .series
-                .i16()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Int16Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::Int32 => self
-                .series
-                .i32()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Int32Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::UInt8 => self
-                .series
-                .u8()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Uint8Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::UInt16 => self
-                .series
-                .u16()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Uint16Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::UInt32 => self
-                .series
-                .u32()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Uint32Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::Float32 => self
-                .series
-                .f32()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Float32Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
-            PDataType::Float64 => self
-                .series
-                .f64()
-                .and_then(|x| {
-                    x.cont_slice().map(|x| {
-                        let arr = js_sys::Float64Array::new_with_length(x.len() as u32);
-                        arr.copy_from(x);
-                        arr.into()
-                    })
-                })
-                .map_err(|x| js_sys::Error::new(&format!("{}", x))),
+            PDataType::Int8 => series_to_typed_array!(self, i8, js_sys::Int8Array),
+            PDataType::Int16 => series_to_typed_array!(self, i16, js_sys::Int16Array),
+            PDataType::Int32 => series_to_typed_array!(self, i32, js_sys::Int32Array),
+            PDataType::UInt8 => series_to_typed_array!(self, u8, js_sys::Uint8Array),
+            PDataType::UInt16 => series_to_typed_array!(self, u16, js_sys::Uint16Array),
+            PDataType::UInt32 => series_to_typed_array!(self, u32, js_sys::Uint32Array),
+            PDataType::Float32 => series_to_typed_array!(self, f32, js_sys::Float32Array),
+            PDataType::Float64 => series_to_typed_array!(self, f64, js_sys::Float64Array),
             PDataType::Utf8 => self
                 .series
                 .utf8()
