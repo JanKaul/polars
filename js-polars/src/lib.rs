@@ -1,3 +1,4 @@
+pub mod conversion;
 pub mod dataframe;
 pub mod datatypes;
 pub mod lazy;
