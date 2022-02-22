@@ -61,6 +61,14 @@ impl Series {
     }
 }
 
+macro_rules! typed_array_to_chunked {
+    ($values:expr,$name:expr,$x:ty,$y: ident) => {
+        $values
+            .dyn_ref::<$x>()
+            .map(|x| Ok($y::from_slice($name, &x.to_vec()).into_series().into()))
+    };
+}
+
 #[wasm_bindgen]
 impl Series {
     #[wasm_bindgen(constructor)]
@@ -92,68 +100,20 @@ impl Series {
         match values
             .dyn_ref::<js_sys::Array>()
             .map(|x| Self::new_array(&name, x))
+            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Int8Array, Int8Chunked))
+            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Int16Array, Int16Chunked))
+            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Int32Array, Int32Chunked))
+            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Uint8Array, UInt8Chunked))
             .or_else(|| {
-                values.dyn_ref::<js_sys::Int8Array>().map(|x| {
-                    Ok(Series {
-                        series: Int8Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
+                typed_array_to_chunked!(values, &name, js_sys::Uint8ClampedArray, UInt8Chunked)
+            })
+            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Uint16Array, UInt16Chunked))
+            .or_else(|| typed_array_to_chunked!(values, &name, js_sys::Uint32Array, UInt32Chunked))
+            .or_else(|| {
+                typed_array_to_chunked!(values, &name, js_sys::Float32Array, Float32Chunked)
             })
             .or_else(|| {
-                values.dyn_ref::<js_sys::Int16Array>().map(|x| {
-                    Ok(Series {
-                        series: Int16Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Int32Array>().map(|x| {
-                    Ok(Series {
-                        series: Int32Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Float32Array>().map(|x| {
-                    Ok(Series {
-                        series: Float32Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Float64Array>().map(|x| {
-                    Ok(Series {
-                        series: Float64Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Uint8Array>().map(|x| {
-                    Ok(Series {
-                        series: UInt8Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Uint8ClampedArray>().map(|x| {
-                    Ok(Series {
-                        series: UInt8Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Uint16Array>().map(|x| {
-                    Ok(Series {
-                        series: UInt16Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
-            })
-            .or_else(|| {
-                values.dyn_ref::<js_sys::Uint32Array>().map(|x| {
-                    Ok(Series {
-                        series: UInt32Chunked::from_slice(&name, &x.to_vec()).into_series(),
-                    })
-                })
+                typed_array_to_chunked!(values, &name, js_sys::Float64Array, Float64Chunked)
             }) {
             Some(res) => res,
             None => Err(js_sys::Error::new("Error: Wrong input for constructor.")),

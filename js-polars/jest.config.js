@@ -13,6 +13,6 @@ export default {
     '@polars': '<rootDir>/pkg/js_polars',
     'chance': '<rootDir>/node_modules/chance',
   },
-  setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
+  // setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/__tests__/setup.ts"]
 };
