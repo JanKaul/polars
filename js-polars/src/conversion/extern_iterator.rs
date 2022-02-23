@@ -22,7 +22,7 @@ macro_rules! struct_iterator {
             fn next(&mut self) -> Option<Self::Item> {
                 if self.count < self.len {
                     self.count += 1;
-                    Some($y::from([<$x _get>](self.array, self.count)).to_rust())
+                    Some($y::from([<$x _get>](self.array, self.count)).into_rust())
                 } else {
                     None
                 }
