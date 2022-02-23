@@ -1,14 +1,27 @@
+use paste::paste;
 use std::ops::Deref;
 
 use polars_lazy::prelude::Expr as PExpr;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::datatypes::DataType;
+use crate::{datatypes::DataType, extern_struct, struct_iterator};
 
 pub mod functions;
 
 #[wasm_bindgen]
 pub struct Expr(PExpr);
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "Expr")]
+    pub type ExternExpr;
+    #[wasm_bindgen(typescript_type = "Expr[]")]
+    pub type ExprArray;
+}
+
+extern_struct!(ExternExpr, Expr);
+
+struct_iterator!(ExprArray, ExternExpr, Expr);
 
 impl Deref for Expr {
     type Target = PExpr;

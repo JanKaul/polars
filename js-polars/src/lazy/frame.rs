@@ -4,8 +4,9 @@ use js_sys::Error;
 use polars_lazy::prelude::LazyFrame as PLazyFrame;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::conversion::array::ExprArray;
 use polars_lazy::prelude::Expr as PExpr;
+
+use crate::lazy::dsl::ExprArray;
 
 #[wasm_bindgen]
 pub struct LazyFrame(PLazyFrame);
