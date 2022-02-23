@@ -4,7 +4,7 @@ use std::ops::Deref;
 use polars_lazy::prelude::Expr as PExpr;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{datatypes::DataType, extern_struct, struct_iterator};
+use crate::{datatypes::DataType, extern_iterator, extern_struct};
 
 pub mod functions;
 
@@ -21,7 +21,7 @@ extern "C" {
 
 extern_struct!(ExternExpr, Expr);
 
-struct_iterator!(ExprArray, ExternExpr, Expr);
+extern_iterator!(ExprArray, ExternExpr, Expr);
 
 impl Deref for Expr {
     type Target = PExpr;

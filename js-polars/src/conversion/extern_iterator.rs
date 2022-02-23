@@ -5,7 +5,7 @@ pub struct StructIterator<'a, T> {
 }
 
 #[macro_export]
-macro_rules! struct_iterator {
+macro_rules! extern_iterator {
     ( $x:ident, $y:ty, $z:ty) => {
         paste! {
         use crate::conversion::extern_struct::IntoRustStruct;
