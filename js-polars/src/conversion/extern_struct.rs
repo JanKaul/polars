@@ -15,19 +15,19 @@ macro_rules! extern_struct {
         use wasm_bindgen::convert::{FromWasmAbi, RefFromWasmAbi};
         #[wasm_bindgen]
         extern "C" {
-            #[wasm_bindgen(getter = ptr)]
+            #[wasm_bindgen(method, getter = ptr)]
             fn [<$x _ptr>](this: &$x) -> f64;
         }
 
         impl<'a> crate::conversion::extern_struct::IntoRustStruct<$y> for $x {
             fn into_rust(self) -> $y {
-                unsafe { $y::from_abi([<$x _ptr>](&self) as u32) }
+                unsafe { $y::from_abi(self.[<$x _ptr>]() as u32) }
             }
         }
 
         impl<'a> crate::conversion::extern_struct::RefRustStruct<'a, $y> for &'a $x {
             fn ref_rust(self) -> wasm_bindgen::__rt::Ref<'static, $y> {
-                unsafe { $y::ref_from_abi([<$x _ptr>](self) as u32) }
+                unsafe { $y::ref_from_abi(self.[<$x _ptr>]() as u32) }
             }
         }
         }

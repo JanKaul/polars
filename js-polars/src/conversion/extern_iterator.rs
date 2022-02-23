@@ -11,9 +11,9 @@ macro_rules! struct_iterator {
         use crate::conversion::extern_struct::IntoRustStruct;
         #[wasm_bindgen]
         extern "C" {
-            #[wasm_bindgen(getter = length)]
+            #[wasm_bindgen(method, getter = length)]
             fn [<$x _length>](this: &$x) -> usize;
-            #[wasm_bindgen(indexing_getter)]
+            #[wasm_bindgen(method, indexing_getter)]
             fn [<$x _get>](this: &$x, prop: usize) -> wasm_bindgen::JsValue;
         }
 
@@ -22,7 +22,7 @@ macro_rules! struct_iterator {
             fn next(&mut self) -> Option<Self::Item> {
                 if self.count < self.len {
                     self.count += 1;
-                    Some($y::from([<$x _get>](self.array, self.count)).into_rust())
+                    Some($y::from(self.array.[<$x _get>]( self.count)).into_rust())
                 } else {
                     None
                 }
@@ -35,7 +35,7 @@ macro_rules! struct_iterator {
             fn into_iter(self) -> Self::IntoIter {
                 crate::conversion::extern_iterator::StructIterator {
                     count: 0,
-                    len: [<$x _length>](self),
+                    len: self.[<$x _length>](),
                     array: self,
                 }
             }
