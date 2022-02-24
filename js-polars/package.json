@@ -2,8 +2,8 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "build": "wasm-pack build --target web",
-    "build:dev": "wasm-pack build --dev --target web"
+    "build": "wasm-pack build",
+    "build:dev": "wasm-pack build --dev"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
