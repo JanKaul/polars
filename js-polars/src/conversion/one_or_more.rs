@@ -1,19 +1,37 @@
-use wasm_bindgen::JsCast;
+use std::convert::TryFrom;
 
-pub enum OneOrMoreRef<'a, T: JsCast, A: IntoIterator<Item = T>> {
-    One(&'a T),
+use js_sys::TypeError;
+use wasm_bindgen::{
+    convert::{FromWasmAbi, RefFromWasmAbi},
+    JsCast, JsValue,
+};
+
+use super::extern_struct::RefRustStruct;
+
+pub enum OneOrMoreRef<
+    'a,
+    T: FromWasmAbi<Abi = u32> + RefFromWasmAbi<Abi = u32>,
+    E: JsCast + RefRustStruct<'a, T>,
+    A: JsCast + IntoIterator<Item = T>,
+> {
+    One(&'a E),
     More(&'a A),
 }
 
-impl<'a, T: JsCast, A: JsCast + IntoIterator<Item = T>, H: JsCast> From<&'a H>
-    for OneOrMoreRef<'a, T, A>
+impl<
+        'a,
+        T: FromWasmAbi<Abi = u32> + RefFromWasmAbi<Abi = u32>,
+        E: JsCast + RefRustStruct<'a, T>,
+        A: JsCast + IntoIterator<Item = T>,
+    > TryFrom<&'a JsValue> for OneOrMoreRef<'a, T, E, A>
 {
-    fn from(value: &'a H) -> Self {
-        match value.dyn_ref::<T>() {
-            Some(obj) => OneOrMoreRef::One(obj),
+    type Error = js_sys::Error;
+    fn try_from(value: &'a JsValue) -> Result<Self, Self::Error> {
+        match value.dyn_ref::<E>() {
+            Some(obj) => Ok(OneOrMoreRef::One(obj)),
             None => match value.dyn_ref::<A>() {
-                Some(arr) => OneOrMoreRef::More(arr),
-                None => panic!(),
+                Some(arr) => Ok(OneOrMoreRef::More(arr)),
+                None => Err(TypeError::new("TypeError: {value} is not of the right type.").into()),
             },
         }
     }
