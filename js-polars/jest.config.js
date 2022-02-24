@@ -1,6 +1,6 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 export default {
-  preset: 'ts-jest/presets/js-with-ts',
+  preset: 'ts-jest/presets/js-with-ts-esm',
   globals: {
     'ts-jest': {
       useESM: true,
@@ -13,6 +13,6 @@ export default {
     '@polars': '<rootDir>/pkg/js_polars',
     'chance': '<rootDir>/node_modules/chance',
   },
-  // setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/__tests__/setup.ts"]
 };
