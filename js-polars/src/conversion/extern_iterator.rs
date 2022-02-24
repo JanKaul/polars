@@ -1,4 +1,4 @@
-pub struct StructIterator<'a, T> {
+pub struct ExternIterator<'a, T> {
     pub count: usize,
     pub len: usize,
     pub array: &'a T,
@@ -17,7 +17,7 @@ macro_rules! extern_iterator {
             fn [<$x _get>](this: &$x, prop: usize) -> wasm_bindgen::JsValue;
         }
 
-        impl<'a> Iterator for crate::conversion::extern_iterator::StructIterator<'a, $x> {
+        impl<'a> Iterator for crate::conversion::extern_iterator::ExternIterator<'a, $x> {
             type Item = $z;
             fn next(&mut self) -> Option<Self::Item> {
                 if self.count < self.len {
@@ -31,9 +31,9 @@ macro_rules! extern_iterator {
 
         impl<'a> IntoIterator for &'a $x {
             type Item = $z;
-            type IntoIter = crate::conversion::extern_iterator::StructIterator<'a, $x>;
+            type IntoIter = crate::conversion::extern_iterator::ExternIterator<'a, $x>;
             fn into_iter(self) -> Self::IntoIter {
-                crate::conversion::extern_iterator::StructIterator {
+                crate::conversion::extern_iterator::ExternIterator {
                     count: 0,
                     len: self.[<$x _length>](),
                     array: self,
