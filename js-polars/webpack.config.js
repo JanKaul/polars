@@ -9,6 +9,7 @@ export default {
     entry: './pkg/index.js', // input file of the JS bundle
     target: "es2017",
     output: {
+        filename: "index.js",
         library: { type: "module", },
         chunkFormat: "module",
         module: true,
@@ -30,7 +31,7 @@ export default {
             name: "js-polars",
             baseDir: ".",
             main: "pkg/index.d.ts",
-            out: "dist/main.d.ts"
+            out: "dist/index.d.ts"
         })
     ],
     experiments: {

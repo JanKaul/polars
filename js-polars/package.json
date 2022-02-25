@@ -1,6 +1,7 @@
 {
   "type": "module",
-  "main": "dist/main.mjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
   "scripts": {
     "test": "jest",
     "build": "webpack --mode=production",
