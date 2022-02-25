@@ -132,9 +132,9 @@ export const df = () => {
 
   return df.lazy().withColumns(
 
-    [pl.col("date").cast(pl.Date),
-    pl.col("datetime").cast(pl.Datetime),
-    pl.col("strings").cast(pl.Categorical)
+    [pl.col("date").cast(pl.DataType.Date),
+    pl.col("datetime").cast(pl.DataType.Datetime),
+    pl.col("strings").cast(pl.DataType.Categorical)
       .alias("cat")]
   );
 };

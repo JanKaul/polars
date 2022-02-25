@@ -1,17 +1,16 @@
 {
     "compilerOptions": {
-        "module": "es2015",
+        "module": "esnext",
         "target": "ES2020",
-        "moduleResolution": "node",
         "esModuleInterop": true,
         "allowJs": true,
         "baseUrl": ".",
         "paths": {
             "@polars/index": [
-                "./pkg/js_polars"
+                "./dist/index.js"
             ],
             "@polars": [
-                "./pkg/js_polars"
+                "./dist/index.js"
             ],
         },
     },

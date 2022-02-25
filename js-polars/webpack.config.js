@@ -36,6 +36,7 @@ export default {
     ],
     experiments: {
         asyncWebAssembly: true,
+        topLevelAwait: true,
         outputModule: true
     }
 }
