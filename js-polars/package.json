@@ -4,12 +4,11 @@
   "types": "dist/index.d.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode=production",
-    "build:dev": "webpack --mode=development"
+    "build": "wasm-pack build; webpack --mode=production",
+    "build:dev": "wasm-pack build --dev; webpack"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
-    "@wasm-tool/wasm-pack-plugin": "^1.6.0",
     "chance": "^1.1.8",
     "dts-bundle-webpack": "^1.0.2",
     "jest": "^27.5.1",
