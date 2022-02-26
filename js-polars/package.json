@@ -3,9 +3,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build": "wasm-pack build; webpack --mode=production",
-    "build:dev": "wasm-pack build --dev; webpack"
+    "build:dev": "wasm-pack build --dev; webpack --mode=development"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

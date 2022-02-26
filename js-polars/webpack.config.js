@@ -33,5 +33,5 @@ export default {
     experiments: {
         futureDefaults: true,
         outputModule: true
-    }
+    },
 }
