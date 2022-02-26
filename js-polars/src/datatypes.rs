@@ -3,28 +3,6 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 use crate::series::Series;
 
-#[wasm_bindgen(typescript_custom_section)]
-const DATATYPES: &'static str = r#"
-export import Int8 = DataType.Int8
-export import Int16 = DataType.Int16
-export import Int32 = DataType.Int32;
-export import Int64 = DataType.Int64;
-export import UInt8 = DataType.UInt8;
-export import UInt16 = DataType.UInt16;
-export import UInt32 = DataType.UInt32;
-export import UInt64 = DataType.UInt64;
-export import Float32 = DataType.Float32;
-export import Float64 = DataType.Float64;
-export import Bool = DataType.Bool;
-export import Utf8 = DataType.Utf8;
-export import List = DataType.List;
-export import Date = DataType.Date;
-export import Datetime = DataType.Datetime;
-export import Time = DataType.Time;
-export import Object = DataType.Object;
-export import Categorical = DataType.Categorical;
-"#;
-
 #[wasm_bindgen]
 pub enum DataType {
     Int8,
