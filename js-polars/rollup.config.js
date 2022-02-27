@@ -1,6 +1,7 @@
 import rust from "@wasm-tool/rollup-plugin-rust";
+import dts from "rollup-plugin-dts";
 
-export default {
+export default [{
     input: {
         index: "Cargo.toml",
     },
@@ -13,4 +14,8 @@ export default {
         topLevelAwait: true,
         serverPath: "dist/"
     })]
-};
+}, {
+    input: "target/wasm-pack/js-polars/index.d.ts",
+    output: [{ file: "dist/index.d.ts", format: "es" }],
+    plugins: [dts()],
+}];
