@@ -1,12 +1,16 @@
 {
+  "name": "js-polars",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build": "rollup --config",
-    "build:dev": "wasm-pack build --dev; webpack --mode=development"
+    "build:dev": "rollup --config --dev"
   },
+  "files": [
+    "dist/"
+  ],
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@wasm-tool/rollup-plugin-rust": "JanKaul/rollup-plugin-rust#async_esmodule",

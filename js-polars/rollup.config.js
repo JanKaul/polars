@@ -1,7 +1,7 @@
 import rust from "@wasm-tool/rollup-plugin-rust";
 import dts from "rollup-plugin-dts";
 
-export default [{
+export default commandLineArgs => [{
     input: {
         index: "Cargo.toml",
     },
@@ -10,7 +10,7 @@ export default [{
         format: 'es'
     },
     plugins: [rust({
-        debug: true,
+        debug: commandLineArgs.dev,
         topLevelAwait: true,
         serverPath: "dist/"
     })]
