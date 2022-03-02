@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { default as DtsBundleWebpack } from "dts-bundle-webpack"
+import { default as CopyPlugin } from "copy-webpack-plugin"
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -21,12 +21,11 @@ export default {
         ]
     },
     plugins: [
-        new DtsBundleWebpack({
-            name: "js-polars",
-            baseDir: ".",
-            main: "pkg/js_polars.d.ts",
-            out: "dist/index.d.ts"
-        })
+        new CopyPlugin({
+            patterns: [
+                { from: "pkg/js_polars.d.ts", to: "index.d.ts" },
+            ],
+        }),
     ],
     experiments: {
         futureDefaults: true,
