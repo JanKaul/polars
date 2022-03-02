@@ -7,10 +7,10 @@
         "baseUrl": ".",
         "paths": {
             "@polars/index": [
-                "./dist/index.js"
+                "./pkg_test/js_polars.js"
             ],
             "@polars": [
-                "./dist/index.js"
+                "./pkg_test/js_polars.js"
             ],
         },
     },

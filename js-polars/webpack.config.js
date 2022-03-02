@@ -6,11 +6,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default {
     entry: './pkg/js_polars.js', // input file of the JS bundle
-    target: "es2017",
     output: {
         filename: "index.js",
         library: { type: "module", },
-        chunkFormat: "module",
         module: true,
         path: resolve(__dirname, 'dist'), // directory of where the bundle will be created at
     },
