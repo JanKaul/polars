@@ -9,8 +9,8 @@ export default {
   },
   testEnvironment: "jsdom",
   moduleNameMapper: {
-    '@polars/index': '<rootDir>/pkg_test/js_polars.js',
-    '@polars': '<rootDir>/pkg_test/js_polars.js',
+    '@polars/index': '<rootDir>/pkg_test/js_polars',
+    '@polars': '<rootDir>/pkg_test/js_polars',
     'chance': '<rootDir>/node_modules/chance',
   },
   setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"],
